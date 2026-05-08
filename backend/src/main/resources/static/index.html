@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Семейные Покупки</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+        header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .tab-btn { padding: 8px 16px; cursor: pointer; border: 1px solid #ccc; background: #f9f9f9; border-radius: 4px; }
+        .tab-btn.active { font-weight: bold; background: #e0e0e0; border-color: #999; }
+        .form-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        .form-group input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .form-group input[type="text"] { flex: 1; }
+        .form-group input[type="number"] { width: 100px; }
+        button { padding: 8px 16px; cursor: pointer; border: 1px solid #ccc; background: #fff; border-radius: 4px; }
+        button:hover { background: #f0f0f0; }
+        .suggestions { background: #fff3cd; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .item-row.bought span.name { text-decoration: line-through; opacity: 0.5; }
+        .event-row { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .event-row img { border-radius: 50%; margin-right: 15px; }
+        .hidden { display: none; }
+    </style>
+    <!-- Подключаем SockJS и Stomp -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+</head>
+<body>
+
+    <header>
+        <h2>Семейные Покупки</h2>
+        <img id="my-avatar" alt="Мой аватар" width="50" style="border-radius: 50%; border: 2px solid #ccc;" />
+    </header>
+
+    <div class="tabs">
+        <button id="tab-list" class="tab-btn active" onclick="switchTab('list')">📋 Список покупок</button>
+        <button id="tab-history" class="tab-btn" onclick="switchTab('history')">⏱ История изменений</button>
+    </div>
+
+    <!-- Вкладка: Список покупок -->
+    <div id="view-list">
+        <form id="add-form" class="form-group">
+            <input type="text" id="prod-name" placeholder="Что купить?" required>
+            <input type="number" id="prod-price" placeholder="Цена (руб)" required>
+            <button type="submit">Добавить</button>
+        </form>
+
+        <div id="suggestions-container" class="suggestions hidden">
+            <h3 style="margin-top: 0;">🤔 Предложения (нужно 3 голоса)</h3>
+            <div id="suggestions-list"></div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3>🛒 Общий список</h3>
+            <div>
+                <button onclick="exportTXT()" style="font-size: 12px;">TXT</button>
+                <button onclick="exportJSON()" style="font-size: 12px;">JSON</button>
+            </div>
+        </div>
+        
+        <div id="approved-list"></div>
+        <p id="empty-list-msg" style="color: #888; display: none;">Список пуст!</p>
+    </div>
+
+    <!-- Вкладка: История -->
+    <div id="view-history" class="hidden">
+        <h3>Лента событий</h3>
+        <div id="events-list"></div>
+        <p id="empty-events-msg" style="color: #888; display: none;">История пуста</p>
+    </div>
+
+    <script src="/app.js"></script>
+</body>
+</html>
