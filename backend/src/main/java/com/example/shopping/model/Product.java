@@ -1,16 +1,25 @@
 package com.example.shopping.model;
 
+import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+@Entity
 public class Product {
+    @Id
     private String id = UUID.randomUUID().toString();
     private String name;
     private double price;
     private boolean bought = false;
     private boolean approved;
     private String addedByAvatar;
+    
+    // Оптимистичная блокировка (позволяет избежать конфликтов при одновременном редактировании)
+    @Version
+    private Long version;
+
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> voters = new HashSet<>(); 
 
     public Product() {}
@@ -31,6 +40,7 @@ public class Product {
     public void setApproved(boolean approved) { this.approved = approved; }
     public String getAddedByAvatar() { return addedByAvatar; }
     public Set<String> getVoters() { return voters; }
+    public Long getVersion() { return version; }
     
     public void addVote(String userId) {
         voters.add(userId);

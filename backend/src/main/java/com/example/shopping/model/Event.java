@@ -1,13 +1,19 @@
 package com.example.shopping.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
+@Entity
 public class Event {
+    @Id
     private String id = UUID.randomUUID().toString();
+    
+    private LocalDateTime createdAt = LocalDateTime.now(); // Для сортировки
     private String timestamp;
-    private String action; // e.g., "Добавлено", "Удалено", "Куплено"
+    private String action; 
     private String productName;
     private String userAvatar;
 
@@ -21,6 +27,7 @@ public class Event {
     }
 
     public String getId() { return id; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
     public String getTimestamp() { return timestamp; }
     public String getAction() { return action; }
     public String getProductName() { return productName; }
